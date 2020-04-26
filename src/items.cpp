@@ -199,9 +199,12 @@ const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
 	{"mana", FLUID_MANA},
 	{"life", FLUID_LIFE},
 	{"oil", FLUID_OIL},
+	#ifndef __PROTOCOL_792__
 	{"urine", FLUID_URINE},
 	{"coconut", FLUID_COCONUTMILK},
+	#endif
 	{"wine", FLUID_WINE},
+	#ifndef __PROTOCOL_792__
 	{"mud", FLUID_MUD},
 	{"fruitjuice", FLUID_FRUITJUICE},
 	{"lava", FLUID_LAVA},
@@ -209,6 +212,7 @@ const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
 	{"swamp", FLUID_SWAMP},
 	{"tea", FLUID_TEA},
 	{"mead", FLUID_MEAD},
+	#endif
 };
 
 
@@ -286,13 +290,24 @@ bool Items::loadFromOtb(const std::string& file)
 
 	if (majorVersion == 0xFFFFFFFF) {
 		std::cout << "[Warning - Items::loadFromOtb] items.otb using generic client version." << std::endl;
-	} else if (majorVersion != 3) {
+	}
+	#ifndef __PROTOCOL_792__ 
+	else if (majorVersion != 3) {
 		std::cout << "Old version detected, a newer version of items.otb is required." << std::endl;
 		return false;
 	} else if (minorVersion < CLIENT_VERSION_1098) {
 		std::cout << "A newer version of items.otb is required." << std::endl;
 		return false;
 	}
+	#else
+	else if (majorVersion != 1) {
+		std::cout << "Old version detected, a newer version of items.otb is required." << std::endl;
+		return false;
+	} else if (minorVersion < CLIENT_VERSION_792) {
+		std::cout << "A newer version of items.otb is required." << std::endl;
+		return false;
+	}
+	#endif
 
 	for (auto& itemNode : root.children) {
 		PropStream stream;
@@ -436,6 +451,13 @@ bool Items::loadFromOtb(const std::string& file)
 			case ITEM_GROUP_FLUID:
 			case ITEM_GROUP_CHARGES:
 			case ITEM_GROUP_DEPRECATED:
+			#ifdef __PROTOCOL_792__
+			case ITEM_GROUP_WEAPON:
+			case ITEM_GROUP_AMMUNITION:
+			case ITEM_GROUP_ARMOR:
+			case ITEM_GROUP_WRITEABLE:
+			case ITEM_GROUP_KEY:
+			#endif
 				break;
 			default:
 				return false;
@@ -1016,7 +1038,9 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
+					#ifndef __PROTOCOL_792__
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
+					#endif
 					break;
 				}
 
@@ -1025,9 +1049,11 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
+					#ifndef __PROTOCOL_792__
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] += value;
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] += value;
+					#endif
 					break;
 				}
 
@@ -1045,7 +1071,8 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 					break;
 				}
-
+				
+				#ifndef __PROTOCOL_792__
 				case ITEM_PARSE_ABSORBPERCENTICE: {
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 					break;
@@ -1060,6 +1087,7 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 					break;
 				}
+				#endif
 
 				case ITEM_PARSE_ABSORBPERCENTLIFEDRAIN: {
 					abilities.absorbPercent[combatTypeToIndex(COMBAT_LIFEDRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
@@ -1285,11 +1313,13 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 					break;
 				}
 
+				#ifndef __PROTOCOL_792__
 				case ITEM_PARSE_ELEMENTICE: {
 					abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 					abilities.elementType = COMBAT_ICEDAMAGE;
 					break;
 				}
+				#endif
 
 				case ITEM_PARSE_ELEMENTEARTH: {
 					abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());

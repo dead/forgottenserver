@@ -32,9 +32,11 @@ NpcScriptInterface* Npc::scriptInterface = nullptr;
 void Npcs::reload()
 {
 	const std::map<uint32_t, Npc*>& npcs = g_game.getNpcs();
+	#ifndef __PROTOCOL_792__
 	for (const auto& it : npcs) {
 		it.second->closeAllShopWindows();
 	}
+	#endif
 
 	delete Npc::scriptInterface;
 	Npc::scriptInterface = nullptr;
@@ -271,7 +273,9 @@ void Npc::onRemoveCreature(Creature* creature, bool isLogout)
 	Creature::onRemoveCreature(creature, isLogout);
 
 	if (creature == this) {
+		#ifndef __PROTOCOL_792__
 		closeAllShopWindows();
+		#endif
 		if (npcEventHandler) {
 			npcEventHandler->onCreatureDisappear(creature);
 		}
@@ -353,11 +357,17 @@ void Npc::doSay(const std::string& text)
 void Npc::doSayToPlayer(Player* player, const std::string& text)
 {
 	if (player) {
+		#ifndef __PROTOCOL_792__
 		player->sendCreatureSay(this, TALKTYPE_PRIVATE_NP, text);
 		player->onCreatureSay(this, TALKTYPE_PRIVATE_NP, text);
+		#else
+		player->sendCreatureSay(this, TALKTYPE_SAY, text);
+		player->onCreatureSay(this, TALKTYPE_SAY, text);
+		#endif
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Npc::onPlayerTrade(Player* player, int32_t callback, uint16_t itemId, uint8_t count,
                         uint8_t amount, bool ignore/* = false*/, bool inBackpacks/* = false*/)
 {
@@ -385,6 +395,7 @@ void Npc::onPlayerEndTrade(Player* player, int32_t buyCallback, int32_t sellCall
 		npcEventHandler->onPlayerEndTrade(player);
 	}
 }
+#endif
 
 bool Npc::getNextStep(Direction& dir, uint32_t& flags)
 {
@@ -533,6 +544,7 @@ void Npc::setCreatureFocus(Creature* creature)
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Npc::addShopPlayer(Player* player)
 {
 	shopPlayerSet.insert(player);
@@ -552,6 +564,7 @@ void Npc::closeAllShopWindows()
 		}
 	}
 }
+#endif
 
 NpcScriptInterface* Npc::getScriptInterface()
 {
@@ -614,16 +627,20 @@ void NpcScriptInterface::registerFunctions()
 	lua_register(luaState, "doNpcSetCreatureFocus", NpcScriptInterface::luaSetNpcFocus);
 	lua_register(luaState, "getNpcCid", NpcScriptInterface::luaGetNpcCid);
 	lua_register(luaState, "getNpcParameter", NpcScriptInterface::luaGetNpcParameter);
+	#ifndef __PROTOCOL_792__
 	lua_register(luaState, "openShopWindow", NpcScriptInterface::luaOpenShopWindow);
 	lua_register(luaState, "closeShopWindow", NpcScriptInterface::luaCloseShopWindow);
+	#endif
 	lua_register(luaState, "doSellItem", NpcScriptInterface::luaDoSellItem);
 
 	// metatable
 	registerMethod("Npc", "getParameter", NpcScriptInterface::luaNpcGetParameter);
 	registerMethod("Npc", "setFocus", NpcScriptInterface::luaNpcSetFocus);
 
+	#ifndef __PROTOCOL_792__
 	registerMethod("Npc", "openShopWindow", NpcScriptInterface::luaNpcOpenShopWindow);
 	registerMethod("Npc", "closeShopWindow", NpcScriptInterface::luaNpcCloseShopWindow);
+	#endif
 }
 
 int NpcScriptInterface::luaActionSay(lua_State* L)
@@ -770,6 +787,7 @@ int NpcScriptInterface::luaGetNpcParameter(lua_State* L)
 	return 1;
 }
 
+#ifndef __PROTOCOL_792__
 int NpcScriptInterface::luaOpenShopWindow(lua_State* L)
 {
 	//openShopWindow(cid, items, onBuy callback, onSell callback)
@@ -883,6 +901,7 @@ int NpcScriptInterface::luaCloseShopWindow(lua_State* L)
 	pushBoolean(L, true);
 	return 1;
 }
+#endif
 
 int NpcScriptInterface::luaDoSellItem(lua_State* L)
 {
@@ -981,6 +1000,7 @@ int NpcScriptInterface::luaNpcSetFocus(lua_State* L)
 	return 1;
 }
 
+#ifndef __PROTOCOL_792__
 int NpcScriptInterface::luaNpcOpenShopWindow(lua_State* L)
 {
 	// npc:openShopWindow(cid, items, buyCallback, sellCallback)
@@ -1085,6 +1105,7 @@ int NpcScriptInterface::luaNpcCloseShopWindow(lua_State* L)
 	pushBoolean(L, true);
 	return 1;
 }
+#endif
 
 NpcEventsHandler::NpcEventsHandler(const std::string& file, Npc* npc) :
 	npc(npc), scriptInterface(npc->getScriptInterface())

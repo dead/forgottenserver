@@ -56,6 +56,7 @@ enum MagicEffectClasses : uint8_t {
 	CONST_ME_FIREWORK_YELLOW = 29,
 	CONST_ME_FIREWORK_RED = 30,
 	CONST_ME_FIREWORK_BLUE = 31,
+#ifndef __PROTOCOL_792__
 	CONST_ME_STUN = 32,
 	CONST_ME_SLEEP = 33,
 	CONST_ME_WATERCREATURE = 34,
@@ -113,6 +114,7 @@ enum MagicEffectClasses : uint8_t {
 	CONST_ME_CRITICAL_DAMAGE = 173,
 	// 174 is empty
 	CONST_ME_PLUNGING_FISH = 175,
+#endif
 };
 
 enum ShootType_t : uint8_t {
@@ -133,6 +135,7 @@ enum ShootType_t : uint8_t {
 	CONST_ANI_SNOWBALL = 13,
 	CONST_ANI_POWERBOLT = 14,
 	CONST_ANI_POISON = 15,
+#ifndef __PROTOCOL_792__
 	CONST_ANI_INFERNALBOLT = 16,
 	CONST_ANI_HUNTINGSPEAR = 17,
 	CONST_ANI_ENCHANTEDSPEAR = 18,
@@ -171,7 +174,7 @@ enum ShootType_t : uint8_t {
 
 	CONST_ANI_GLOOTHSPEAR = 53,
 	CONST_ANI_SIMPLEARROW = 54,
-
+#endif
 	// for internal use, don't send to client
 	CONST_ANI_WEAPONTYPE = 0xFE, // 254
 };
@@ -181,6 +184,7 @@ enum SpeakClasses : uint8_t {
 	TALKTYPE_WHISPER = 2,
 	TALKTYPE_YELL = 3,
 	TALKTYPE_PRIVATE_FROM = 4,
+#ifndef __PROTOCOL_792__
 	TALKTYPE_PRIVATE_TO = 5,
 	TALKTYPE_CHANNEL_Y = 7,
 	TALKTYPE_CHANNEL_O = 8,
@@ -192,11 +196,21 @@ enum SpeakClasses : uint8_t {
 	TALKTYPE_PRIVATE_RED_TO = 16, //@name@text
 	TALKTYPE_MONSTER_SAY = 36,
 	TALKTYPE_MONSTER_YELL = 37,
-
 	TALKTYPE_CHANNEL_R2 = 0xFF, //#d
+#else
+	TALKTYPE_CHANNEL_Y = 5,
+	TALKTYPE_BROADCAST = 9,
+	TALKTYPE_CHANNEL_R1 = 10,
+	TALKTYPE_PRIVATE_RED_FROM = 11,
+	TALKTYPE_CHANNEL_O = 12,
+	TALKTYPE_CHANNEL_R2 = 14,
+	TALKTYPE_MONSTER_SAY = 16,
+	TALKTYPE_MONSTER_YELL = 17,
+#endif
 };
 
 enum MessageClasses : uint8_t {
+#ifndef __PROTOCOL_792__
 	MESSAGE_STATUS_CONSOLE_BLUE = 4, /*FIXME Blue message in the console*/
 
 	MESSAGE_STATUS_CONSOLE_RED = 13, /*Red message in the console*/
@@ -222,6 +236,28 @@ enum MessageClasses : uint8_t {
 	MESSAGE_PARTY = 35, /*White message in channel (+ channelId)*/
 	MESSAGE_EVENT_ORANGE = 36, /*Orange message in the console*/
 	MESSAGE_STATUS_CONSOLE_ORANGE = 37,  /*Orange message in the console*/
+#else
+	MESSAGE_STATUS_CONSOLE_YELLOW = 1,
+	MESSAGE_EVENT_PRIVATE = 4,
+	MESSAGE_STATUS_CONSOLE_ORANGE = 17,
+	MESSAGE_STATUS_WARNING = 18, /*Red message in game window and in the console*/
+	MESSAGE_EVENT_ADVANCE = 19, /*White message in game window and in the console*/
+	MESSAGE_EVENT_DEFAULT = 20, /*White message at the bottom of the game window and in the console*/
+	MESSAGE_STATUS_DEFAULT = 21, /*White message at the bottom of the game window and in the console*/
+	MESSAGE_INFO_DESCR = 22, /*Green message in game window and in the console*/
+	MESSAGE_STATUS_SMALL = 23, /*White message at the bottom of the game window"*/
+	MESSAGE_STATUS_CONSOLE_BLUE = 24, /*Blue message in the console*/
+	MESSAGE_STATUS_CONSOLE_RED  = 25, /*Red message in the console*/
+
+	// Internal
+	MESSAGE_DAMAGE_DEALT = 50,
+	MESSAGE_DAMAGE_RECEIVED = 51,
+	MESSAGE_HEALED = 52,
+	MESSAGE_EXPERIENCE = 53,
+	MESSAGE_DAMAGE_OTHERS = 54,
+	MESSAGE_HEALED_OTHERS = 55,
+	MESSAGE_EXPERIENCE_OTHERS = 56,
+#endif
 };
 
 enum FluidColors_t : uint8_t {
@@ -247,10 +283,12 @@ enum FluidTypes_t : uint8_t {
 
 	FLUID_LIFE = FLUID_RED + 8,
 	FLUID_OIL = FLUID_BROWN + 8,
+#ifndef __PROTOCOL_792__
 	FLUID_URINE = FLUID_YELLOW + 8,
 	FLUID_COCONUTMILK = FLUID_WHITE + 8,
+#endif
 	FLUID_WINE = FLUID_PURPLE + 8,
-
+#ifndef __PROTOCOL_792__
 	FLUID_MUD = FLUID_BROWN + 16,
 	FLUID_FRUITJUICE = FLUID_YELLOW + 16,
 
@@ -261,6 +299,7 @@ enum FluidTypes_t : uint8_t {
 	FLUID_TEA = FLUID_BROWN + 32,
 
 	FLUID_MEAD = FLUID_BROWN + 40,
+#endif
 };
 
 const uint8_t reverseFluidMap[] = {
@@ -281,20 +320,28 @@ const uint8_t clientToServerFluidMap[] = {
 	FLUID_WATER,
 	FLUID_MANA,
 	FLUID_BEER,
+#ifndef __PROTOCOL_792__
 	FLUID_MUD,
+#endif
 	FLUID_BLOOD,
 	FLUID_SLIME,
+#ifndef __PROTOCOL_792__
 	FLUID_RUM,
+#endif
 	FLUID_LEMONADE,
 	FLUID_MILK,
 	FLUID_WINE,
 	FLUID_LIFE,
+#ifndef __PROTOCOL_792__
 	FLUID_URINE,
+#endif
 	FLUID_OIL,
+#ifndef __PROTOCOL_792__
 	FLUID_FRUITJUICE,
 	FLUID_COCONUTMILK,
 	FLUID_TEA,
 	FLUID_MEAD,
+#endif
 };
 
 enum ClientFluidTypes_t : uint8_t {
@@ -325,6 +372,7 @@ enum SquareColor_t : uint8_t {
 	SQ_COLOR_BLACK = 0,
 };
 
+
 enum TextColor_t : uint8_t {
 	TEXTCOLOR_BLUE = 5,
 	TEXTCOLOR_LIGHTGREEN = 30,
@@ -353,6 +401,7 @@ enum Icons_t {
 	ICON_HASTE = 1 << 6,
 	ICON_SWORDS = 1 << 7,
 	ICON_DROWNING = 1 << 8,
+#ifndef __PROTOCOL_792__
 	ICON_FREEZING = 1 << 9,
 	ICON_DAZZLED = 1 << 10,
 	ICON_CURSED = 1 << 11,
@@ -360,6 +409,7 @@ enum Icons_t {
 	ICON_REDSWORDS = 1 << 13,
 	ICON_PIGEON = 1 << 14,
 	ICON_BLEEDING = 1 << 15,
+#endif
 };
 
 enum WeaponType_t : uint8_t {
@@ -405,8 +455,10 @@ enum Skulls_t : uint8_t {
 	SKULL_GREEN = 2,
 	SKULL_WHITE = 3,
 	SKULL_RED = 4,
+#ifndef __PROTOCOL_792__
 	SKULL_BLACK = 5,
 	SKULL_ORANGE = 6,
+#endif
 };
 
 enum PartyShields_t : uint8_t {
@@ -415,6 +467,7 @@ enum PartyShields_t : uint8_t {
 	SHIELD_WHITEBLUE = 2,
 	SHIELD_BLUE = 3,
 	SHIELD_YELLOW = 4,
+#ifndef __PROTOCOL_792__
 	SHIELD_BLUE_SHAREDEXP = 5,
 	SHIELD_YELLOW_SHAREDEXP = 6,
 	SHIELD_BLUE_NOSHAREDEXP_BLINK = 7,
@@ -422,6 +475,7 @@ enum PartyShields_t : uint8_t {
 	SHIELD_BLUE_NOSHAREDEXP = 9,
 	SHIELD_YELLOW_NOSHAREDEXP = 10,
 	SHIELD_GRAY = 11,
+#endif
 };
 
 enum GuildEmblems_t : uint8_t {
@@ -454,25 +508,34 @@ enum item_t : uint16_t {
 
 	ITEM_MAGICWALL = 1497,
 	ITEM_MAGICWALL_PERSISTENT = 1498,
+#ifndef __PROTOCOL_792__
 	ITEM_MAGICWALL_SAFE = 11098,
 	ITEM_MAGICWALL_NOPVP = 20669,
+#endif
 
 	ITEM_WILDGROWTH = 1499,
 	ITEM_WILDGROWTH_PERSISTENT = 2721,
+#ifndef __PROTOCOL_792__
 	ITEM_WILDGROWTH_SAFE = 11099,
 	ITEM_WILDGROWTH_NOPVP = 20670,
+#endif
 
 	ITEM_BAG = 1987,
+#ifndef __PROTOCOL_792__
 	ITEM_SHOPPING_BAG = 23782,
+#endif
 
 	ITEM_GOLD_COIN = 2148,
 	ITEM_PLATINUM_COIN = 2152,
 	ITEM_CRYSTAL_COIN = 2160,
+#ifndef __PROTOCOL_792__
 	ITEM_STORE_COIN = 24774, // in-game store currency
+#endif
 
 	ITEM_DEPOT = 2594,
 	ITEM_LOCKER1 = 2589,
 	ITEM_INBOX = 14404,
+#ifndef __PROTOCOL_792__
 	ITEM_MARKET = 14405,
 	ITEM_STORE_INBOX = 26052,
 	ITEM_DEPOT_BOX_I = 25453,
@@ -492,6 +555,7 @@ enum item_t : uint16_t {
 	ITEM_DEPOT_BOX_XV = 25467,
 	ITEM_DEPOT_BOX_XVI = 25468,
 	ITEM_DEPOT_BOX_XVII = 25469,
+#endif
 
 	ITEM_MALE_CORPSE = 3058,
 	ITEM_FEMALE_CORPSE = 3065,

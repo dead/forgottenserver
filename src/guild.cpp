@@ -28,18 +28,22 @@ extern Game g_game;
 void Guild::addMember(Player* player)
 {
 	membersOnline.push_back(player);
+	#ifndef __PROTOCOL_792__
 	for (Player* member : membersOnline) {
 		g_game.updatePlayerHelpers(*member);
 	}
+	#endif
 }
 
 void Guild::removeMember(Player* player)
 {
 	membersOnline.remove(player);
+	#ifndef __PROTOCOL_792__
 	for (Player* member : membersOnline) {
 		g_game.updatePlayerHelpers(*member);
 	}
 	g_game.updatePlayerHelpers(*player);
+	#endif
 
 	if (membersOnline.empty()) {
 		g_game.removeGuild(id);

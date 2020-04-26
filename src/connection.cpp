@@ -186,6 +186,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 		return;
 	}
 
+	#ifndef __PROTOCOL_792__
 	//Check packet checksum
 	uint32_t checksum;
 	int32_t len = msg.getLength() - msg.getBufferPosition() - NetworkMessage::CHECKSUM_LENGTH;
@@ -200,6 +201,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 		// it might not have been the checksum, step back
 		msg.skipBytes(-NetworkMessage::CHECKSUM_LENGTH);
 	}
+	#endif
 
 	if (!receivedFirst) {
 		// First message received
@@ -207,7 +209,11 @@ void Connection::parsePacket(const boost::system::error_code& error)
 
 		if (!protocol) {
 			// Game protocol has already been created at this point
+			#ifndef __PROTOCOL_792__
 			protocol = service_port->make_protocol(recvChecksum == checksum, msg, shared_from_this());
+			#else
+			protocol = service_port->make_protocol(true, msg, shared_from_this());
+			#endif
 			if (!protocol) {
 				close(FORCE_CLOSE);
 				return;

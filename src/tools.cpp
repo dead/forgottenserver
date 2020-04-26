@@ -186,6 +186,7 @@ std::string transformToSHA1(const std::string& input)
 	return std::string(hexstring, 40);
 }
 
+#ifndef __PROTOCOL_792__
 std::string generateToken(const std::string& key, uint32_t ticks)
 {
 	// generate message from ticks
@@ -230,6 +231,7 @@ std::string generateToken(const std::string& key, uint32_t ticks)
 	message.insert(0, AUTHENTICATOR_DIGITS - std::min(hashLen, AUTHENTICATOR_DIGITS), '0');
 	return message;
 }
+#endif
 
 void replaceString(std::string& str, const std::string& sought, const std::string& replacement)
 {
@@ -536,6 +538,7 @@ MagicEffectNames magicEffectNames = {
 	{"yellowfirework",	CONST_ME_FIREWORK_YELLOW},
 	{"redfirework",		CONST_ME_FIREWORK_RED},
 	{"bluefirework",	CONST_ME_FIREWORK_BLUE},
+	#ifndef __PROTOCOL_792__
 	{"stun",		CONST_ME_STUN},
 	{"sleep",		CONST_ME_SLEEP},
 	{"watercreature",	CONST_ME_WATERCREATURE},
@@ -586,6 +589,7 @@ MagicEffectNames magicEffectNames = {
 	{"yellowsmoke",		CONST_ME_YELLOWSMOKE},
 	{"greensmoke",		CONST_ME_GREENSMOKE},
 	{"purplesmoke",		CONST_ME_PURPLESMOKE},
+	#endif
 };
 
 ShootTypeNames shootTypeNames = {
@@ -604,6 +608,7 @@ ShootTypeNames shootTypeNames = {
 	{"snowball",		CONST_ANI_SNOWBALL},
 	{"powerbolt",		CONST_ANI_POWERBOLT},
 	{"poison",		CONST_ANI_POISON},
+	#ifndef __PROTOCOL_792__
 	{"infernalbolt",	CONST_ANI_INFERNALBOLT},
 	{"huntingspear",	CONST_ANI_HUNTINGSPEAR},
 	{"enchantedspear",	CONST_ANI_ENCHANTEDSPEAR},
@@ -639,6 +644,7 @@ ShootTypeNames shootTypeNames = {
 	{"envenomedarrow",	CONST_ANI_ENVENOMEDARROW},
 	{"gloothspear",		CONST_ANI_GLOOTHSPEAR},
 	{"simplearrow",		CONST_ANI_SIMPLEARROW},
+	#endif
 };
 
 CombatTypeNames combatTypeNames = {
@@ -651,9 +657,11 @@ CombatTypeNames combatTypeNames = {
 	{COMBAT_MANADRAIN, 		"manadrain"},
 	{COMBAT_HEALING, 		"healing"},
 	{COMBAT_DROWNDAMAGE, 		"drown"},
+	#ifndef __PROTOCOL_792__
 	{COMBAT_ICEDAMAGE, 		"ice"},
 	{COMBAT_HOLYDAMAGE, 		"holy"},
 	{COMBAT_DEATHDAMAGE, 		"death"},
+	#endif
 };
 
 AmmoTypeNames ammoTypeNames = {
@@ -694,8 +702,10 @@ SkullNames skullNames = {
 	{"green",	SKULL_GREEN},
 	{"white",	SKULL_WHITE},
 	{"red",		SKULL_RED},
+	#ifndef __PROTOCOL_792__
 	{"black",	SKULL_BLACK},
 	{"orange",	SKULL_ORANGE},
+	#endif
 };
 
 MagicEffectClasses getMagicEffect(const std::string& strValue)
@@ -813,6 +823,7 @@ std::string getSkillName(uint8_t skillid)
 	}
 }
 
+#ifndef __PROTOCOL_792__
 uint32_t adlerChecksum(const uint8_t* data, size_t length)
 {
 	if (length > NETWORKMESSAGE_MAXSIZE) {
@@ -838,6 +849,7 @@ uint32_t adlerChecksum(const uint8_t* data, size_t length)
 
 	return (b << 16) | a;
 }
+#endif
 
 std::string ucfirst(std::string str)
 {
@@ -911,12 +923,14 @@ size_t combatTypeToIndex(CombatType_t combatType)
 			return 7;
 		case COMBAT_DROWNDAMAGE:
 			return 8;
+		#ifndef __PROTOCOL_792__
 		case COMBAT_ICEDAMAGE:
 			return 9;
 		case COMBAT_HOLYDAMAGE:
 			return 10;
 		case COMBAT_DEATHDAMAGE:
 			return 11;
+		#endif
 		default:
 			return 0;
 	}

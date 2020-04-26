@@ -372,6 +372,7 @@ Thing* Tile::getTopVisibleThing(const Creature* creature)
 
 void Tile::onAddTileItem(Item* item)
 {
+	#ifndef __PROTOCOL_792__
 	if (item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
@@ -379,6 +380,7 @@ void Tile::onAddTileItem(Item* item)
 			item->setParent(this);
 		}
 	}
+	#endif
 
 	setTileFlags(item);
 
@@ -402,6 +404,7 @@ void Tile::onAddTileItem(Item* item)
 
 void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType)
 {
+	#ifndef __PROTOCOL_792__
 	if (newItem->hasProperty(CONST_PROP_MOVEABLE) || newItem->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
@@ -419,6 +422,7 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 			oldItem->setParent(oldParent);
 		}
 	}
+	#endif
 
 	const Position& cylinderMapPos = getPosition();
 
@@ -440,12 +444,14 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 
 void Tile::onRemoveTileItem(const SpectatorVec& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item)
 {
+	#ifndef __PROTOCOL_792__
 	if (item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
 			it->second->removeThing(item, item->getItemCount());
 		}
 	}
+	#endif
 
 	resetTileFlags(item);
 

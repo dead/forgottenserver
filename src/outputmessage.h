@@ -44,9 +44,11 @@ class OutputMessage : public NetworkMessage
 		}
 
 		void addCryptoHeader(bool addChecksum) {
+			#ifndef __PROTOCOL_792__
 			if (addChecksum) {
 				add_header(adlerChecksum(buffer + outputBufferStart, info.length));
 			}
+			#endif
 
 			writeMessageLength();
 		}

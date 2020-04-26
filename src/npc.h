@@ -53,16 +53,20 @@ class NpcScriptInterface final : public LuaScriptInterface
 		static int luaSetNpcFocus(lua_State* L);
 		static int luaGetNpcCid(lua_State* L);
 		static int luaGetNpcParameter(lua_State* L);
+		#ifndef __PROTOCOL_792__
 		static int luaOpenShopWindow(lua_State* L);
 		static int luaCloseShopWindow(lua_State* L);
+		#endif
 		static int luaDoSellItem(lua_State* L);
 
 		// metatable
 		static int luaNpcGetParameter(lua_State* L);
 		static int luaNpcSetFocus(lua_State* L);
 
+		#ifndef __PROTOCOL_792__
 		static int luaNpcOpenShopWindow(lua_State* L);
 		static int luaNpcCloseShopWindow(lua_State* L);
+		#endif
 
 	private:
 		bool initState() override;

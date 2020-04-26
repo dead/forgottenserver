@@ -451,7 +451,7 @@ class Player final : public Creature, public Cylinder
 		void removeMessageBuffer();
 
 		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false) const;
-
+		
 		uint32_t getCapacity() const {
 			if (hasFlag(PlayerFlag_CannotPickupItem)) {
 				return 0;
@@ -804,16 +804,19 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureLight(creature);
 			}
 		}
+		#ifndef __PROTOCOL_792__
 		void sendCreatureWalkthrough(const Creature* creature, bool walkthrough) {
 			if (client) {
 				client->sendCreatureWalkthrough(creature, walkthrough);
 			}
 		}
+		#endif
 		void sendCreatureShield(const Creature* creature) {
 			if (client) {
 				client->sendCreatureShield(creature);
 			}
 		}
+		#ifndef __PROTOCOL_792__
 		void sendCreatureType(uint32_t creatureId, uint8_t creatureType) {
 			if (client) {
 				client->sendCreatureType(creatureId, creatureType);
@@ -824,6 +827,7 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureHelpers(creatureId, helpers);
 			}
 		}
+		#endif
 		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
 			if (client) {
 				client->sendSpellCooldown(spellId, time);
@@ -934,17 +938,21 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendPing();
+		#ifndef __PROTOCOL_792__
 		void sendPingBack() const {
 			if (client) {
 				client->sendPingBack();
 			}
 		}
+		#endif
 		void sendStats();
+		#ifndef __PROTOCOL_792__
 		void sendBasicData() const {
 			if (client) {
 				client->sendBasicData();
 			}
 		}
+		#endif
 		void sendSkills() const {
 			if (client) {
 				client->sendSkills();
@@ -960,11 +968,13 @@ class Player final : public Creature, public Cylinder
 				client->sendTextMessage(message);
 			}
 		}
+		#ifndef __PROTOCOL_792__
 		void sendReLoginWindow(uint8_t unfairFightReduction) const {
 			if (client) {
 				client->sendReLoginWindow(unfairFightReduction);
 			}
 		}
+		#endif
 		void sendTextWindow(Item* item, uint16_t maxlen, bool canWrite) const {
 			if (client) {
 				client->sendTextWindow(windowTextId, item, maxlen, canWrite);
@@ -980,6 +990,7 @@ class Player final : public Creature, public Cylinder
 				client->sendToChannel(creature, type, text, channelId);
 			}
 		}
+		#ifndef __PROTOCOL_792__
 		void sendShop(Npc* npc) const {
 			if (client) {
 				client->sendShop(npc, shopItemList);
@@ -1036,6 +1047,7 @@ class Player final : public Creature, public Cylinder
 				client->sendMarketCancelOffer(offer);
 			}
 		}
+		#endif
 		void sendTradeItemRequest(const std::string& traderName, const Item* item, bool ack) const {
 			if (client) {
 				client->sendTradeItemRequest(traderName, item, ack);
@@ -1077,6 +1089,7 @@ class Player final : public Creature, public Cylinder
 				client->sendChannel(channelId, channelName, channelUsers, invitedUsers);
 			}
 		}
+		#ifndef __PROTOCOL_792__
 		void sendTutorial(uint8_t tutorialId) {
 			if (client) {
 				client->sendTutorial(tutorialId);
@@ -1087,6 +1100,7 @@ class Player final : public Creature, public Cylinder
 				client->sendAddMarker(pos, markType, desc);
 			}
 		}
+		#endif
 		void sendQuestLog() {
 			if (client) {
 				client->sendQuestLog();
@@ -1097,11 +1111,13 @@ class Player final : public Creature, public Cylinder
 				client->sendQuestLine(quest);
 			}
 		}
+		#ifndef __PROTOCOL_792__
 		void sendEnterWorld() {
 			if (client) {
 				client->sendEnterWorld();
 			}
 		}
+		#endif
 		void sendFightModes() {
 			if (client) {
 				client->sendFightModes();

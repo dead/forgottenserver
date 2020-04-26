@@ -960,8 +960,10 @@ class LuaScriptInterface
 		static int luaPlayerForgetSpell(lua_State* L);
 		static int luaPlayerHasLearnedSpell(lua_State* L);
 
+		#ifndef __PROTOCOL_792__
 		static int luaPlayerSendTutorial(lua_State* L);
 		static int luaPlayerAddMapMark(lua_State* L);
+		#endif
 
 		static int luaPlayerSave(lua_State* L);
 		static int luaPlayerPopupFYI(lua_State* L);

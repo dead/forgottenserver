@@ -73,15 +73,27 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 
 bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 {
+	#ifndef __PROTOCOL_792__
 	if (((msg.getLength() - 6) & 7) != 0) {
+	#else
+	if (((msg.getLength() - 2) & 7) != 0) {
+	#endif
 		return false;
 	}
 
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
+	#ifndef __PROTOCOL_792__
 	xtea::decrypt(buffer, msg.getLength() - 6, key);
+	#else
+	xtea::decrypt(buffer, msg.getLength() - 2, key);
+	#endif
 
 	uint16_t innerLength = msg.get<uint16_t>();
+	#ifndef __PROTOCOL_792__
 	if (innerLength + 8 > msg.getLength()) {
+	#else
+	if (innerLength + 4 > msg.getLength()) {
+	#endif
 		return false;
 	}
 

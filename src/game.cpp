@@ -1042,6 +1042,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder, int32_t index,
                                    Item* item, uint32_t count, Item** _moveItem, uint32_t flags /*= 0*/, Creature* actor/* = nullptr*/, Item* tradeItem/* = nullptr*/)
 {
+	#ifndef __PROTOCOL_792__
 	Tile* fromTile = fromCylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1049,6 +1050,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder, Cylinder* toCylinder,
 			fromCylinder = fromTile;
 		}
 	}
+	#endif
 
 	Item* toItem = nullptr;
 
@@ -1319,6 +1321,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	#ifndef __PROTOCOL_792__
 	Tile* fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1326,6 +1329,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 			cylinder = fromTile;
 		}
 	}
+	#endif
 
 	if (count == -1) {
 		count = item->getItemCount();
@@ -1561,6 +1565,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 		return nullptr;
 	}
 
+	#ifndef __PROTOCOL_792__
 	Tile* fromTile = cylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1568,6 +1573,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 			cylinder = fromTile;
 		}
 	}
+	#endif
 
 	int32_t itemIndex = cylinder->getThingIndex(item);
 	if (itemIndex == -1) {
@@ -1968,6 +1974,7 @@ void Game::playerReceivePing(uint32_t playerId)
 	player->receivePing();
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerReceivePingBack(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
@@ -1977,6 +1984,7 @@ void Game::playerReceivePingBack(uint32_t playerId)
 
 	player->sendPingBack();
 }
+#endif
 
 void Game::playerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir)
 {
@@ -2264,11 +2272,12 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid)
 
 	Container* parentContainer = dynamic_cast<Container*>(container->getRealParent());
 	if (!parentContainer) {
+		#ifndef __PROTOCOL_792__
 		Tile* tile = container->getTile();
 		if (!tile) {
 			return;
 		}
-
+		
 		auto it = browseFields.find(tile);
 		if (it == browseFields.end()) {
 			parentContainer = new Container(tile);
@@ -2278,6 +2287,9 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid)
 		} else {
 			parentContainer = it->second;
 		}
+		#else
+		return;
+		#endif
 	}
 
 	player->addContainer(cid, parentContainer);
@@ -2398,6 +2410,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 	player->setWriteItem(nullptr);
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerBrowseField(uint32_t playerId, const Position& pos)
 {
 	Player* player = getPlayerByID(playerId);
@@ -2477,6 +2490,7 @@ void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_
 	player->setContainerIndex(containerId, index);
 	player->sendContainer(containerId, container, container->hasParent(), index);
 }
+#endif
 
 void Game::playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string& text)
 {
@@ -2496,6 +2510,7 @@ void Game::playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t w
 	player->setEditHouse(nullptr);
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerWrapItem(uint32_t playerId, const Position& position, uint8_t stackPos, const uint16_t spriteId)
 {
 	Player* player = getPlayerByID(playerId);
@@ -2531,6 +2546,7 @@ void Game::playerWrapItem(uint32_t playerId, const Position& position, uint8_t s
 
 	g_events->eventPlayerOnWrapItem(player, item);
 }
+#endif
 
 void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t stackPos,
                               uint32_t tradePlayerId, uint16_t spriteId)
@@ -2908,6 +2924,7 @@ void Game::internalCloseTrade(Player* player)
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerPurchaseItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount,
                               bool ignoreCap/* = false*/, bool inBackpacks/* = false*/)
 {
@@ -3027,6 +3044,7 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 	ss << "You see " << Item::getDescription(it, 1, nullptr, subType);
 	player->sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
 }
+#endif
 
 void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos)
 {
@@ -3255,6 +3273,7 @@ void Game::playerRequestOutfit(uint32_t playerId)
 	player->sendOutfitWindow();
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerToggleMount(uint32_t playerId, bool mount)
 {
 	Player* player = getPlayerByID(playerId);
@@ -3264,6 +3283,7 @@ void Game::playerToggleMount(uint32_t playerId, bool mount)
 
 	player->toggleMount(mount);
 }
+#endif
 
 void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 {
@@ -3368,9 +3388,11 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 		return;
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (type != TALKTYPE_PRIVATE_PN) {
 		player->removeMessageBuffer();
 	}
+	#endif
 
 	switch (type) {
 		case TALKTYPE_SAY:
@@ -3385,8 +3407,14 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 			playerYell(player, text);
 			break;
 
+		#ifndef __PROTOCOL_792__
 		case TALKTYPE_PRIVATE_TO:
 		case TALKTYPE_PRIVATE_RED_TO:
+		#else
+		case TALKTYPE_PRIVATE_FROM:
+		case TALKTYPE_PRIVATE_RED_FROM:
+		#endif
+
 			playerSpeakTo(player, type, receiver, text);
 			break;
 
@@ -3396,10 +3424,12 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 			g_chat->talkToChannel(*player, type, text, channelId);
 			break;
 
+		#ifndef __PROTOCOL_792__
 		case TALKTYPE_PRIVATE_PN:
 			playerSpeakToNpc(player, text);
 			break;
-
+		#endif
+		
 		case TALKTYPE_BROADCAST:
 			playerBroadcastMessage(player, text);
 			break;
@@ -3499,7 +3529,13 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 		return false;
 	}
 
-	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlag_CanTalkRedPrivate) || player->getAccountType() >= ACCOUNT_TYPE_GAMEMASTER)) {
+	if (
+			#ifndef __PROTOCOL_792__
+			type == TALKTYPE_PRIVATE_RED_TO
+			#else
+			type == TALKTYPE_PRIVATE_RED_FROM
+			#endif
+			&& (player->hasFlag(PlayerFlag_CanTalkRedPrivate) || player->getAccountType() >= ACCOUNT_TYPE_GAMEMASTER)) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
 		type = TALKTYPE_PRIVATE_FROM;
@@ -3524,7 +3560,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
 		if (spectator->getNpc()) {
-			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
+			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_FROM, text);
 		}
 	}
 }
@@ -3762,8 +3798,11 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 				case COMBAT_ENERGYDAMAGE:
 				case COMBAT_FIREDAMAGE:
 				case COMBAT_PHYSICALDAMAGE:
+				#ifndef __PROTOCOL_792__
 				case COMBAT_ICEDAMAGE:
-				case COMBAT_DEATHDAMAGE: {
+				case COMBAT_DEATHDAMAGE:
+				#endif
+				{
 					hitEffect = CONST_ME_BLOCKHIT;
 					break;
 				}
@@ -3771,10 +3810,12 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 					hitEffect = CONST_ME_GREEN_RINGS;
 					break;
 				}
+				#ifndef __PROTOCOL_792__
 				case COMBAT_HOLYDAMAGE: {
 					hitEffect = CONST_ME_HOLYDAMAGE;
 					break;
 				}
+				#endif
 				default: {
 					hitEffect = CONST_ME_POFF;
 					break;
@@ -3875,6 +3916,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 			effect = CONST_ME_HITBYFIRE;
 			break;
 		}
+		#ifndef __PROTOCOL_792__
 		case COMBAT_ICEDAMAGE: {
 			color = TEXTCOLOR_SKYBLUE;
 			effect = CONST_ME_ICEATTACK;
@@ -3890,6 +3932,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 			effect = CONST_ME_SMALLCLOUDS;
 			break;
 		}
+		#endif
 		case COMBAT_LIFEDRAIN: {
 			color = TEXTCOLOR_RED;
 			effect = CONST_ME_MAGIC_RED;
@@ -3917,11 +3960,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		} else {
 			attackerPlayer = nullptr;
 		}
-
+		
 		Player* targetPlayer = target->getPlayer();
+		#ifndef __PROTOCOL_792__
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
+		#endif
 
 		if (damage.origin != ORIGIN_NONE) {
 			const auto& events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
@@ -4002,6 +4047,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			return true;
 		}
 
+		Player* targetPlayer = target->getPlayer();
+
 		Player* attackerPlayer;
 		if (attacker) {
 			attackerPlayer = attacker->getPlayer();
@@ -4009,10 +4056,11 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			attackerPlayer = nullptr;
 		}
 
-		Player* targetPlayer = target->getPlayer();
+		#ifndef __PROTOCOL_792__
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
+		#endif
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
@@ -4242,12 +4290,14 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 
 	int32_t manaChange = damage.primary.value + damage.secondary.value;
 	if (manaChange > 0) {
+		#ifndef __PROTOCOL_792__
 		if (attacker) {
 			const Player* attackerPlayer = attacker->getPlayer();
 			if (attackerPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(target) == SKULL_NONE) {
 				return false;
 			}
 		}
+		#endif
 
 		if (damage.origin != ORIGIN_NONE) {
 			const auto& events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
@@ -4287,9 +4337,11 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 			attackerPlayer = nullptr;
 		}
 
+		#ifndef __PROTOCOL_792__
 		if (attackerPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
+		#endif
 
 		int32_t manaLoss = std::min<int32_t>(targetPlayer->getMana(), -manaChange);
 		BlockType_t blockType = target->blockHit(attacker, COMBAT_MANADRAIN, manaLoss);
@@ -4622,6 +4674,7 @@ void Game::broadcastMessage(const std::string& text, MessageClasses type) const
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Game::updateCreatureWalkthrough(const Creature* creature)
 {
 	//send to clients
@@ -4632,6 +4685,7 @@ void Game::updateCreatureWalkthrough(const Creature* creature)
 		tmpPlayer->sendCreatureWalkthrough(creature, tmpPlayer->canWalkthroughEx(creature));
 	}
 }
+#endif
 
 void Game::updateCreatureSkull(const Creature* creature)
 {
@@ -4655,6 +4709,7 @@ void Game::updatePlayerShield(Player* player)
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Game::updatePlayerHelpers(const Player& player)
 {
 	uint32_t creatureId = player.getID();
@@ -4702,6 +4757,7 @@ void Game::updateCreatureType(Creature* creature)
 		}
 	}
 }
+#endif
 
 void Game::updatePremium(Account& account)
 {
@@ -4983,6 +5039,7 @@ void Game::playerLeaveParty(uint32_t playerId)
 	party->leaveParty(player);
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpActive)
 {
 	Player* player = getPlayerByID(playerId);
@@ -4997,6 +5054,7 @@ void Game::playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpAc
 
 	party->setSharedExperience(player, sharedExpActive);
 }
+#endif
 
 void Game::sendGuildMotd(uint32_t playerId)
 {
@@ -5057,6 +5115,7 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string& assertLine, c
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Game::playerLeaveMarket(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
@@ -5514,6 +5573,7 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 	} while (!containers.empty());
 	return std::forward_list<Item*>();
 }
+#endif
 
 void Game::forceAddCondition(uint32_t creatureId, Condition* condition)
 {
@@ -5639,6 +5699,7 @@ void Game::removeGuild(uint32_t guildId)
 	guilds.erase(guildId);
 }
 
+#ifndef __PROTOCOL_792__
 void Game::decreaseBrowseFieldRef(const Position& pos)
 {
 	Tile* tile = map.getTile(pos.x, pos.y, pos.z);
@@ -5651,6 +5712,7 @@ void Game::decreaseBrowseFieldRef(const Position& pos)
 		it->second->decrementReferenceCounter();
 	}
 }
+#endif
 
 void Game::internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable)
 {

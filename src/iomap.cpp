@@ -85,6 +85,7 @@ bool IOMap::loadMap(Map* map, const std::string& fileName)
 	}
 
 	uint32_t headerVersion = root_header.version;
+	#ifndef __PROTOCOL_792__
 	if (headerVersion == 0) {
 		//In otbm version 1 the count variable after splashes/fluidcontainers and stackables
 		//are saved as attributes instead, this solves alot of problems with items
@@ -92,13 +93,18 @@ bool IOMap::loadMap(Map* map, const std::string& fileName)
 		setLastErrorString("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 		return false;
 	}
+	#endif
 
 	if (headerVersion > 2) {
 		setLastErrorString("Unknown OTBM version detected.");
 		return false;
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (root_header.majorVersionItems < 3) {
+	#else
+	if (root_header.majorVersionItems < 1) {
+	#endif
 		setLastErrorString("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 		return false;
 	}
@@ -108,7 +114,11 @@ bool IOMap::loadMap(Map* map, const std::string& fileName)
 		return false;
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (root_header.minorVersionItems < CLIENT_VERSION_810) {
+	#else
+	if (root_header.minorVersionItems < CLIENT_VERSION_792) {
+	#endif
 		setLastErrorString("This map needs to be updated.");
 		return false;
 	}

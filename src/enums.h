@@ -190,11 +190,14 @@ enum CombatType_t : uint16_t {
 	COMBAT_MANADRAIN = 1 << 6,
 	COMBAT_HEALING = 1 << 7,
 	COMBAT_DROWNDAMAGE = 1 << 8,
+	#ifndef __PROTOCOL_792__
 	COMBAT_ICEDAMAGE = 1 << 9,
 	COMBAT_HOLYDAMAGE = 1 << 10,
 	COMBAT_DEATHDAMAGE = 1 << 11,
-
 	COMBAT_COUNT = 12
+	#else
+	COMBAT_COUNT = 9
+	#endif
 };
 
 enum CombatParam_t {

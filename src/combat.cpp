@@ -112,7 +112,8 @@ CombatType_t Combat::ConditionToDamageType(ConditionType_t type)
 
 		case CONDITION_POISON:
 			return COMBAT_EARTHDAMAGE;
-
+		
+		#ifndef __PROTOCOL_792__
 		case CONDITION_FREEZING:
 			return COMBAT_ICEDAMAGE;
 
@@ -121,7 +122,8 @@ CombatType_t Combat::ConditionToDamageType(ConditionType_t type)
 
 		case CONDITION_CURSED:
 			return COMBAT_DEATHDAMAGE;
-
+		#endif
+		
 		default:
 			break;
 	}
@@ -143,7 +145,8 @@ ConditionType_t Combat::DamageToConditionType(CombatType_t type)
 
 		case COMBAT_EARTHDAMAGE:
 			return CONDITION_POISON;
-
+		
+		#ifndef __PROTOCOL_792__
 		case COMBAT_ICEDAMAGE:
 			return CONDITION_FREEZING;
 
@@ -152,6 +155,7 @@ ConditionType_t Combat::DamageToConditionType(CombatType_t type)
 
 		case COMBAT_DEATHDAMAGE:
 			return CONDITION_CURSED;
+		#endif
 
 		case COMBAT_PHYSICALDAMAGE:
 			return CONDITION_BLEEDING;
@@ -277,9 +281,11 @@ bool Combat::isProtected(const Player* attacker, const Player* target)
 		return true;
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (attacker->getSkull() == SKULL_BLACK && attacker->getSkullClient(target) == SKULL_NONE) {
 		return true;
 	}
+	#endif
 
 	return false;
 }
@@ -569,6 +575,7 @@ void Combat::postCombatEffects(Creature* caster, const Position& pos, const Comb
 
 void Combat::addDistanceEffect(Creature* caster, const Position& fromPos, const Position& toPos, uint8_t effect)
 {
+	#ifndef __PROTOCOL_792__
 	if (effect == CONST_ANI_WEAPONTYPE) {
 		if (!caster) {
 			return;
@@ -598,6 +605,7 @@ void Combat::addDistanceEffect(Creature* caster, const Position& fromPos, const 
 	if (effect != CONST_ANI_NONE) {
 		g_game.addDistanceEffect(fromPos, toPos, effect);
 	}
+	#endif
 }
 
 void Combat::doCombat(Creature* caster, Creature* target) const
@@ -743,7 +751,11 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 	if (casterPlayer) {
 		if (damage.primary.value < 0 || damage.secondary.value < 0) {
 			Player* targetPlayer = target ? target->getPlayer() : nullptr;
-			if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
+			if (targetPlayer 
+					#ifndef __PROTOCOL_792__
+					&& targetPlayer->getSkull() != SKULL_BLACK
+					#endif
+			) {
 				damage.primary.value /= 2;
 				damage.secondary.value /= 2;
 			}
@@ -757,9 +769,11 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 		addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (damage.critical && target) {
 		g_game.addMagicEffect(target->getPosition(), CONST_ME_CRITICAL_DAMAGE);
 	}
+	#endif
 
 	bool success = false;
 	if (damage.primary.type != COMBAT_MANADRAIN) {
@@ -874,7 +888,11 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 					bool playerCombatReduced = false;
 					if ((damageCopy.primary.value < 0 || damageCopy.secondary.value < 0) && caster) {
 						Player* targetPlayer = creature->getPlayer();
-						if (targetPlayer && caster->getPlayer() && targetPlayer->getSkull() != SKULL_BLACK) {
+						if (targetPlayer && caster->getPlayer()
+								#ifndef __PROTOCOL_792__
+								&& targetPlayer->getSkull() != SKULL_BLACK
+								#endif
+						) {
 							damageCopy.primary.value /= 2;
 							damageCopy.secondary.value /= 2;
 							playerCombatReduced = true;
@@ -885,7 +903,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 					damageCopy.secondary.value += playerCombatReduced ? criticalSecondary / 2 : criticalSecondary;
 
 					if (damageCopy.critical) {
+						#ifndef __PROTOCOL_792__
 						g_game.addMagicEffect(creature->getPosition(), CONST_ME_CRITICAL_DAMAGE);
+						#endif
 					}
 
 					bool success = false;
@@ -1440,7 +1460,13 @@ void AreaCombat::setupExtArea(const std::list<uint32_t>& list, uint32_t rows)
 void MagicField::onStepInField(Creature* creature)
 {
 	//remove magic walls/wild growth
-	if (id == ITEM_MAGICWALL || id == ITEM_WILDGROWTH || id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE || isBlocking()) {
+	if (id == ITEM_MAGICWALL || 
+			#ifndef __PROTOCOL_792__
+		  id == ITEM_WILDGROWTH ||
+			id == ITEM_MAGICWALL_SAFE ||
+			id == ITEM_WILDGROWTH_SAFE ||
+			#endif
+		  isBlocking()) {
 		if (!creature->isInGhostMode()) {
 			g_game.internalRemoveItem(this, 1);
 		}

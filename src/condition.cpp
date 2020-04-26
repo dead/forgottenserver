@@ -275,7 +275,11 @@ bool Condition::isPersistent() const
 
 uint32_t Condition::getIcons() const
 {
+	#ifndef __PROTOCOL_792__
 	return isBuff ? ICON_PARTY_BUFF : 0;
+	#else
+	return 0;
+	#endif
 }
 
 bool Condition::updateCondition(const Condition* addCondition)
@@ -749,8 +753,12 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 	if (internalHealthTicks >= healthTicks) {
 		internalHealthTicks = 0;
 
+		#ifndef __PROTOCOL_792__
 		int32_t realHealthGain = creature->getHealth();
+		#endif
 		creature->changeHealth(healthGain);
+
+		#ifndef __PROTOCOL_792__
 		realHealthGain = creature->getHealth() - realHealthGain;
 
 		if (isBuff && realHealthGain > 0) {
@@ -776,14 +784,19 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 				}
 			}
 		}
+		#endif
 	}
 
 	if (internalManaTicks >= manaTicks) {
 		internalManaTicks = 0;
 
 		if (Player* player = creature->getPlayer()) {
+			#ifndef __PROTOCOL_792__
 			int32_t realManaGain = player->getMana();
+			#endif
 			player->changeMana(manaGain);
+
+			#ifndef __PROTOCOL_792__
 			realManaGain = player->getMana() - realManaGain;
 
 			if (isBuff && realManaGain > 0) {
@@ -806,6 +819,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					}
 				}
 			}
+			#endif
 		}
 	}
 
@@ -1260,7 +1274,8 @@ uint32_t ConditionDamage::getIcons() const
 		case CONDITION_POISON:
 			icons |= ICON_POISON;
 			break;
-
+		
+		#ifndef __PROTOCOL_792__
 		case CONDITION_FREEZING:
 			icons |= ICON_FREEZING;
 			break;
@@ -1276,7 +1291,8 @@ uint32_t ConditionDamage::getIcons() const
 		case CONDITION_BLEEDING:
 			icons |= ICON_BLEEDING;
 			break;
-
+		#endif
+		
 		default:
 			break;
 	}

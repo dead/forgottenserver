@@ -128,6 +128,7 @@ uint32_t IOLoginData::gameworldAuthentication(const std::string& accountName, co
 		return 0;
 	}
 
+	#ifndef __PROTOCOL_792__
 	std::string secret = decodeSecret(result->getString("secret"));
 	if (!secret.empty()) {
 		if (token.empty()) {
@@ -139,6 +140,7 @@ uint32_t IOLoginData::gameworldAuthentication(const std::string& accountName, co
 			return 0;
 		}
 	}
+	#endif
 
 	if (transformToSHA1(password) != result->getString("password")) {
 		return 0;
@@ -354,9 +356,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 			uint16_t skull = result->getNumber<uint16_t>("skull");
 			if (skull == SKULL_RED) {
 				player->skull = SKULL_RED;
-			} else if (skull == SKULL_BLACK) {
+			}
+			#ifndef __PROTOCOL_792__
+			else if (skull == SKULL_BLACK) {
 				player->skull = SKULL_BLACK;
 			}
+			#endif
 		}
 	}
 
@@ -709,9 +714,12 @@ bool IOLoginData::savePlayer(Player* player)
 		Skulls_t skull = SKULL_NONE;
 		if (player->skull == SKULL_RED) {
 			skull = SKULL_RED;
-		} else if (player->skull == SKULL_BLACK) {
+		}
+		#ifndef __PROTOCOL_792__
+		else if (player->skull == SKULL_BLACK) {
 			skull = SKULL_BLACK;
 		}
+		#endif
 		query << "`skull` = " << static_cast<int64_t>(skull) << ',';
 	}
 

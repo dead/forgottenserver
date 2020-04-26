@@ -141,7 +141,19 @@ Item* Item::CreateItem(PropStream& propStream)
 			break;
 	}
 
+	#ifdef __PROTOCOL_792__
+	const ItemType& it = Item::items[id];
+	uint8_t  _count = 1;
+
+	if(it.stackable || it.isSplash() || it.isFluidContainer()){
+		if(!propStream.read<uint8_t>(_count)){
+			return NULL;
+		}
+	}
+	return Item::CreateItem(id, _count);
+	#else
 	return Item::CreateItem(id, 0);
+	#endif
 }
 
 Item::Item(const uint16_t type, uint16_t count /*= 0*/) :

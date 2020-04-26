@@ -394,6 +394,7 @@ uint16_t Player::getClientIcons() const
 		}
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (pzLocked) {
 		icons |= ICON_REDSWORDS;
 	}
@@ -406,6 +407,11 @@ uint16_t Player::getClientIcons() const
 			icons &= ~ICON_SWORDS;
 		}
 	}
+	#else
+	if (pzLocked) {
+		icons |= ICON_SWORDS;
+	}
+	#endif
 
 	// Game client debugs with 10 or more icons
 	// so let's prevent that from happening.
@@ -796,8 +802,10 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 
 	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER1);
 	depotLocker->setDepotId(depotId);
+	#ifndef __PROTOCOL_792__
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);
+	#endif
 	depotLocker->internalAddThing(getDepotChest(depotId, true));
 	depotLockerMap[depotId] = depotLocker;
 	return depotLocker;
@@ -1099,7 +1107,9 @@ void Player::onChangeZone(ZoneType_t zone)
 		}
 	}
 
+	#ifndef __PROTOCOL_792__
 	g_game.updateCreatureWalkthrough(this);
+	#endif
 	sendIcons();
 }
 
@@ -1147,7 +1157,9 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 			g_game.internalCloseTrade(this);
 		}
 
+		#ifndef __PROTOCOL_792__
 		closeShopWindow();
+		#endif
 
 		clearPartyInvitations();
 
@@ -1179,6 +1191,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 	}
 }
 
+#ifndef __PROTOCOL_792__
 void Player::openShopWindow(Npc* npc, const std::list<ShopInfo>& shop)
 {
 	shopItemList = shop;
@@ -1208,6 +1221,7 @@ bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/)
 	shopItemList.clear();
 	return true;
 }
+#endif
 
 void Player::onWalk(Direction& dir)
 {
@@ -1596,6 +1610,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 
 	experience += exp;
 
+	#ifndef __PROTOCOL_792__
 	if (sendText) {
 		std::string expString = std::to_string(exp) + (exp != 1 ? " experience points." : " experience point.");
 
@@ -1616,6 +1631,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 			}
 		}
 	}
+	#endif
 
 	uint32_t prevLevel = level;
 	while (experience >= nextLevelExp) {
@@ -1674,9 +1690,13 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		return;
 	}
 
+	#ifndef __PROTOCOL_792__
 	uint64_t lostExp = experience;
+	#endif
+	
 	experience = std::max<int64_t>(0, experience - exp);
-
+	
+	#ifndef __PROTOCOL_792__
 	if (sendText) {
 		lostExp -= experience;
 
@@ -1699,6 +1719,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 			}
 		}
 	}
+	#endif
 
 	uint32_t oldLevel = level;
 	uint64_t currLevelExp = Player::getExpForLevel(level);
@@ -2017,8 +2038,9 @@ void Player::death(Creature* lastHitCreature)
 
 		sendStats();
 		sendSkills();
-		sendReLoginWindow(unfairFightReduction);
 
+		#ifndef __PROTOCOL_792__
+		sendReLoginWindow(unfairFightReduction);
 		if (getSkull() == SKULL_BLACK) {
 			health = 40;
 			mana = 0;
@@ -2026,6 +2048,10 @@ void Player::death(Creature* lastHitCreature)
 			health = healthMax;
 			mana = manaMax;
 		}
+		#else
+		health = healthMax;
+		mana = manaMax;
+		#endif
 
 		auto it = conditions.begin(), end = conditions.end();
 		while (it != end) {
@@ -2930,9 +2956,12 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 		g_moveEvents->onPlayerEquip(this, thing->getItem(), static_cast<slots_t>(index), false);
 	}
 
+	#ifndef __PROTOCOL_792__
 	bool requireListUpdate = false;
+	#endif
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
+		#ifndef __PROTOCOL_792__
 		const Item* i = (oldParent ? oldParent->getItem() : nullptr);
 
 		// Check if we owned the old container too, so we don't need to do anything,
@@ -2944,6 +2973,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 		} else {
 			requireListUpdate = oldParent != this;
 		}
+		#endif
 
 		updateInventoryWeight();
 		updateItemsLight();
@@ -2955,9 +2985,11 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 			onSendContainer(container);
 		}
 
+		#ifndef __PROTOCOL_792__
 		if (shopOwner && requireListUpdate) {
 			updateSaleShopList(item);
 		}
+		#endif
 	} else if (const Creature* creature = thing->getCreature()) {
 		if (creature == this) {
 			//check containers
@@ -2984,11 +3016,13 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 		g_moveEvents->onPlayerDeEquip(this, thing->getItem(), static_cast<slots_t>(index));
 	}
 
+	#ifndef __PROTOCOL_792__
 	bool requireListUpdate = false;
+	#endif
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
+		#ifndef __PROTOCOL_792__
 		const Item* i = (newParent ? newParent->getItem() : nullptr);
-
 		// Check if we owned the old container too, so we don't need to do anything,
 		// as the list was updated in postRemoveNotification
 		assert(i ? i->getContainer() != nullptr : true);
@@ -2998,6 +3032,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 		} else {
 			requireListUpdate = newParent != this;
 		}
+		#endif
 
 		updateInventoryWeight();
 		updateItemsLight();
@@ -3032,12 +3067,15 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			}
 		}
 
+		#ifndef __PROTOCOL_792__
 		if (shopOwner && requireListUpdate) {
 			updateSaleShopList(item);
 		}
+		#endif
 	}
 }
 
+#ifndef __PROTOCOL_792__
 bool Player::updateSaleShopList(const Item* item)
 {
 	uint16_t itemId = item->getID();
@@ -3069,6 +3107,7 @@ bool Player::hasShopItemForSale(uint32_t itemId, uint8_t subType) const
 		return shopInfo.itemId == itemId && shopInfo.buyPrice != 0 && (!itemType.isFluidContainer() || shopInfo.subType == subType);
 	});
 }
+#endif
 
 void Player::internalAddThing(Thing* thing)
 {
@@ -3340,7 +3379,11 @@ void Player::onEndCondition(ConditionType_t type)
 		pzLocked = false;
 		clearAttacked();
 
-		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
+		if (getSkull() != SKULL_RED
+				#ifndef __PROTOCOL_792__
+				&& getSkull() != SKULL_BLACK
+				#endif
+		) {
 			setSkull(SKULL_NONE);
 		}
 	}
@@ -3825,6 +3868,7 @@ void Player::addUnjustifiedDead(const Player* attacked)
 
 	skullTicks += g_config.getNumber(ConfigManager::FRAG_TIME);
 
+	#ifndef __PROTOCOL_792__
 	if (getSkull() != SKULL_BLACK) {
 		if (g_config.getNumber(ConfigManager::KILLS_TO_BLACK) != 0 && skullTicks > (g_config.getNumber(ConfigManager::KILLS_TO_BLACK) - 1) * static_cast<int64_t>(g_config.getNumber(ConfigManager::FRAG_TIME))) {
 			setSkull(SKULL_BLACK);
@@ -3832,6 +3876,11 @@ void Player::addUnjustifiedDead(const Player* attacked)
 			setSkull(SKULL_RED);
 		}
 	}
+	#else
+	if (getSkull() != SKULL_RED && g_config.getNumber(ConfigManager::KILLS_TO_RED) != 0 && skullTicks > (g_config.getNumber(ConfigManager::KILLS_TO_RED) - 1) * static_cast<int64_t>(g_config.getNumber(ConfigManager::FRAG_TIME))) {
+		setSkull(SKULL_RED);
+	}
+	#endif
 }
 
 void Player::checkSkullTicks(int64_t ticks)
@@ -3843,7 +3892,11 @@ void Player::checkSkullTicks(int64_t ticks)
 		skullTicks = newTicks;
 	}
 
-	if ((skull == SKULL_RED || skull == SKULL_BLACK) && skullTicks < 1 && !hasCondition(CONDITION_INFIGHT)) {
+	if ((skull == SKULL_RED
+			#ifndef __PROTOCOL_792__
+			|| skull == SKULL_BLACK
+			#endif
+			) && skullTicks < 1 && !hasCondition(CONDITION_INFIGHT)) {
 		setSkull(SKULL_NONE);
 	}
 }
@@ -3945,7 +3998,9 @@ bool Player::isPremium() const
 void Player::setPremiumDays(int32_t v)
 {
 	premiumDays = v;
+	#ifndef __PROTOCOL_792__
 	sendBasicData();
+	#endif
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const
@@ -3956,6 +4011,7 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 
 	if (party) {
 		if (party->getLeader() == player) {
+			#ifndef __PROTOCOL_792__
 			if (party->isSharedExperienceActive()) {
 				if (party->isSharedExperienceEnabled()) {
 					return SHIELD_YELLOW_SHAREDEXP;
@@ -3967,11 +4023,13 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 
 				return SHIELD_YELLOW_NOSHAREDEXP_BLINK;
 			}
+			#endif
 
 			return SHIELD_YELLOW;
 		}
 
 		if (player->party == party) {
+			#ifndef __PROTOCOL_792__
 			if (party->isSharedExperienceActive()) {
 				if (party->isSharedExperienceEnabled()) {
 					return SHIELD_BLUE_SHAREDEXP;
@@ -3983,6 +4041,7 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 
 				return SHIELD_BLUE_NOSHAREDEXP_BLINK;
 			}
+			#endif
 
 			return SHIELD_BLUE;
 		}
@@ -3996,9 +4055,11 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 		return SHIELD_WHITEYELLOW;
 	}
 
+	#ifndef __PROTOCOL_792__
 	if (player->party) {
 		return SHIELD_GRAY;
 	}
+	#endif
 
 	return SHIELD_NONE;
 }

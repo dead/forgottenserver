@@ -1027,6 +1027,7 @@ void Creature::onTickCondition(ConditionType_t type, bool& bRemove)
 		case CONDITION_POISON:
 			bRemove = (field->getCombatType() != COMBAT_EARTHDAMAGE);
 			break;
+		#ifndef __PROTOCOL_792__
 		case CONDITION_FREEZING:
 			bRemove = (field->getCombatType() != COMBAT_ICEDAMAGE);
 			break;
@@ -1036,6 +1037,7 @@ void Creature::onTickCondition(ConditionType_t type, bool& bRemove)
 		case CONDITION_CURSED:
 			bRemove = (field->getCombatType() != COMBAT_DEATHDAMAGE);
 			break;
+		#endif
 		case CONDITION_DROWN:
 			bRemove = (field->getCombatType() != COMBAT_DROWNDAMAGE);
 			break;
@@ -1085,6 +1087,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	gainExp /= 2;
 	master->onGainExperience(gainExp, target);
 
+	#ifndef __PROTOCOL_792__
 	SpectatorVec spectators;
 	g_game.map.getSpectators(spectators, position, false, true);
 	if (spectators.empty()) {
@@ -1099,6 +1102,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	for (Creature* spectator : spectators) {
 		spectator->getPlayer()->sendTextMessage(message);
 	}
+	#endif
 }
 
 bool Creature::setMaster(Creature* newMaster) {

@@ -36,7 +36,11 @@ class NetworkMessage
 		// 2 bytes for unencrypted message size
 		// 4 bytes for checksum
 		// 2 bytes for encrypted message size
+		#ifndef __PROTOCOL_792__
 		static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
+		#else
+		static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
+		#endif
 		enum { HEADER_LENGTH = 2 };
 		enum { CHECKSUM_LENGTH = 4 };
 		enum { XTEA_MULTIPLE = 8 };

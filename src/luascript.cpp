@@ -1115,9 +1115,11 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(COMBAT_MANADRAIN)
 	registerEnum(COMBAT_HEALING)
 	registerEnum(COMBAT_DROWNDAMAGE)
+	#ifndef __PROTOCOL_792__
 	registerEnum(COMBAT_ICEDAMAGE)
 	registerEnum(COMBAT_HOLYDAMAGE)
 	registerEnum(COMBAT_DEATHDAMAGE)
+	#endif
 
 	registerEnum(COMBAT_PARAM_TYPE)
 	registerEnum(COMBAT_PARAM_EFFECT)
@@ -1151,9 +1153,11 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONDITION_CHANNELMUTEDTICKS)
 	registerEnum(CONDITION_YELLTICKS)
 	registerEnum(CONDITION_ATTRIBUTES)
+	#ifndef __PROTOCOL_792__
 	registerEnum(CONDITION_FREEZING)
 	registerEnum(CONDITION_DAZZLED)
 	registerEnum(CONDITION_CURSED)
+	#endif
 	registerEnum(CONDITION_EXHAUST_COMBAT)
 	registerEnum(CONDITION_EXHAUST_HEAL)
 	registerEnum(CONDITION_PACIFIED)
@@ -1256,6 +1260,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_FIREWORK_YELLOW)
 	registerEnum(CONST_ME_FIREWORK_RED)
 	registerEnum(CONST_ME_FIREWORK_BLUE)
+	#ifndef __PROTOCOL_792__
 	registerEnum(CONST_ME_STUN)
 	registerEnum(CONST_ME_SLEEP)
 	registerEnum(CONST_ME_WATERCREATURE)
@@ -1310,6 +1315,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ME_RAGIAZ_BONECAPSULE)
 	registerEnum(CONST_ME_CRITICAL_DAMAGE)
 	registerEnum(CONST_ME_PLUNGING_FISH)
+	#endif
 
 	registerEnum(CONST_ANI_NONE)
 	registerEnum(CONST_ANI_SPEAR)
@@ -1327,6 +1333,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ANI_SNOWBALL)
 	registerEnum(CONST_ANI_POWERBOLT)
 	registerEnum(CONST_ANI_POISON)
+	#ifndef __PROTOCOL_792__
 	registerEnum(CONST_ANI_INFERNALBOLT)
 	registerEnum(CONST_ANI_HUNTINGSPEAR)
 	registerEnum(CONST_ANI_ENCHANTEDSPEAR)
@@ -1363,6 +1370,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(CONST_ANI_GLOOTHSPEAR)
 	registerEnum(CONST_ANI_SIMPLEARROW)
 	registerEnum(CONST_ANI_WEAPONTYPE)
+	#endif
 
 	registerEnum(CONST_PROP_BLOCKSOLID)
 	registerEnum(CONST_PROP_HASHEIGHT)
@@ -1409,7 +1417,7 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(GAME_STATE_SHUTDOWN)
 	registerEnum(GAME_STATE_CLOSING)
 	registerEnum(GAME_STATE_MAINTAIN)
-
+	#ifndef __PROTOCOL_792__
 	registerEnum(MESSAGE_STATUS_CONSOLE_BLUE)
 	registerEnum(MESSAGE_STATUS_CONSOLE_RED)
 	registerEnum(MESSAGE_STATUS_DEFAULT)
@@ -1431,7 +1439,27 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(MESSAGE_EVENT_ORANGE)
 	registerEnum(MESSAGE_STATUS_CONSOLE_ORANGE)
 	registerEnum(MESSAGE_LOOT)
-
+	#else
+	registerEnum(MESSAGE_STATUS_CONSOLE_YELLOW)
+	registerEnum(MESSAGE_EVENT_PRIVATE)
+	registerEnum(MESSAGE_STATUS_CONSOLE_ORANGE)
+	registerEnum(MESSAGE_STATUS_WARNING)
+	registerEnum(MESSAGE_EVENT_ADVANCE)
+	registerEnum(MESSAGE_EVENT_DEFAULT)
+	registerEnum(MESSAGE_STATUS_DEFAULT)
+	registerEnum(MESSAGE_INFO_DESCR)
+	registerEnum(MESSAGE_STATUS_SMALL)
+	registerEnum(MESSAGE_STATUS_CONSOLE_BLUE)
+	registerEnum(MESSAGE_STATUS_CONSOLE_RED)
+	registerEnum(MESSAGE_DAMAGE_DEALT)
+	registerEnum(MESSAGE_DAMAGE_RECEIVED)
+	registerEnum(MESSAGE_HEALED)
+	registerEnum(MESSAGE_EXPERIENCE)
+	registerEnum(MESSAGE_DAMAGE_OTHERS)
+	registerEnum(MESSAGE_HEALED_OTHERS)
+	registerEnum(MESSAGE_EXPERIENCE_OTHERS)
+	#endif
+	
 	registerEnum(CREATURETYPE_PLAYER)
 	registerEnum(CREATURETYPE_MONSTER)
 	registerEnum(CREATURETYPE_NPC)
@@ -1486,7 +1514,9 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(ITEM_TYPE_RUNE)
 
 	registerEnum(ITEM_BAG)
+	#ifndef __PROTOCOL_792__
 	registerEnum(ITEM_SHOPPING_BAG)
+	#endif
 	registerEnum(ITEM_GOLD_COIN)
 	registerEnum(ITEM_PLATINUM_COIN)
 	registerEnum(ITEM_CRYSTAL_COIN)
@@ -1507,11 +1537,13 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(ITEM_ENERGYFIELD_PERSISTENT)
 	registerEnum(ITEM_ENERGYFIELD_NOPVP)
 	registerEnum(ITEM_MAGICWALL)
+	#ifndef __PROTOCOL_792__
 	registerEnum(ITEM_MAGICWALL_PERSISTENT)
 	registerEnum(ITEM_MAGICWALL_SAFE)
 	registerEnum(ITEM_WILDGROWTH)
 	registerEnum(ITEM_WILDGROWTH_PERSISTENT)
 	registerEnum(ITEM_WILDGROWTH_SAFE)
+	#endif
 
 	registerEnum(PlayerFlag_CannotUseCombat)
 	registerEnum(PlayerFlag_CannotAttackPlayer)
@@ -1605,13 +1637,16 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(SKULL_GREEN)
 	registerEnum(SKULL_WHITE)
 	registerEnum(SKULL_RED)
+	#ifndef __PROTOCOL_792__
 	registerEnum(SKULL_BLACK)
 	registerEnum(SKULL_ORANGE)
+	#endif
 
 	registerEnum(TALKTYPE_SAY)
 	registerEnum(TALKTYPE_WHISPER)
 	registerEnum(TALKTYPE_YELL)
 	registerEnum(TALKTYPE_PRIVATE_FROM)
+	#ifndef __PROTOCOL_792__
 	registerEnum(TALKTYPE_PRIVATE_TO)
 	registerEnum(TALKTYPE_CHANNEL_Y)
 	registerEnum(TALKTYPE_CHANNEL_O)
@@ -1624,6 +1659,16 @@ void LuaScriptInterface::registerFunctions()
 	registerEnum(TALKTYPE_MONSTER_SAY)
 	registerEnum(TALKTYPE_MONSTER_YELL)
 	registerEnum(TALKTYPE_CHANNEL_R2)
+	#else
+	registerEnum(TALKTYPE_CHANNEL_Y)
+	registerEnum(TALKTYPE_BROADCAST)
+	registerEnum(TALKTYPE_CHANNEL_R1)
+	registerEnum(TALKTYPE_PRIVATE_RED_FROM)
+	registerEnum(TALKTYPE_CHANNEL_O)
+	registerEnum(TALKTYPE_CHANNEL_R2)
+	registerEnum(TALKTYPE_MONSTER_SAY)
+	registerEnum(TALKTYPE_MONSTER_YELL)
+	#endif
 
 	registerEnum(TEXTCOLOR_BLUE)
 	registerEnum(TEXTCOLOR_LIGHTGREEN)
@@ -2399,8 +2444,10 @@ void LuaScriptInterface::registerFunctions()
 	registerMethod("Player", "forgetSpell", LuaScriptInterface::luaPlayerForgetSpell);
 	registerMethod("Player", "hasLearnedSpell", LuaScriptInterface::luaPlayerHasLearnedSpell);
 
+	#ifndef __PROTOCOL_792__
 	registerMethod("Player", "sendTutorial", LuaScriptInterface::luaPlayerSendTutorial);
 	registerMethod("Player", "addMapMark", LuaScriptInterface::luaPlayerAddMapMark);
+	#endif
 
 	registerMethod("Player", "save", LuaScriptInterface::luaPlayerSave);
 	registerMethod("Player", "popupFYI", LuaScriptInterface::luaPlayerPopupFYI);
@@ -7084,7 +7131,9 @@ int LuaScriptInterface::luaCreatureSetMaster(lua_State* L)
 	}
 
 	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
+	#ifndef __PROTOCOL_792__
 	g_game.updateCreatureType(creature);
+	#endif
 	return 1;
 }
 
@@ -9494,6 +9543,7 @@ int LuaScriptInterface::luaPlayerHasLearnedSpell(lua_State* L)
 	return 1;
 }
 
+#ifndef __PROTOCOL_792__
 int LuaScriptInterface::luaPlayerSendTutorial(lua_State* L)
 {
 	// player:sendTutorial(tutorialId)
@@ -9523,6 +9573,7 @@ int LuaScriptInterface::luaPlayerAddMapMark(lua_State* L)
 	}
 	return 1;
 }
+#endif
 
 int LuaScriptInterface::luaPlayerSave(lua_State* L)
 {
@@ -12418,7 +12469,9 @@ int LuaScriptInterface::luaMonsterTypeCombatImmunities(lua_State* L)
 			} else if (immunity == "drown") {
 				monsterType->info.damageImmunities |= COMBAT_DROWNDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "ice") {
+			}
+			#ifndef __PROTOCOL_792__
+			else if (immunity == "ice") {
 				monsterType->info.damageImmunities |= COMBAT_ICEDAMAGE;
 				pushBoolean(L, true);
 			} else if (immunity == "holy") {
@@ -12427,7 +12480,9 @@ int LuaScriptInterface::luaMonsterTypeCombatImmunities(lua_State* L)
 			} else if (immunity == "death") {
 				monsterType->info.damageImmunities |= COMBAT_DEATHDAMAGE;
 				pushBoolean(L, true);
-			} else if (immunity == "lifedrain") {
+			}
+			#endif
+			else if (immunity == "lifedrain") {
 				monsterType->info.damageImmunities |= COMBAT_LIFEDRAIN;
 				pushBoolean(L, true);
 			} else if (immunity == "manadrain") {
@@ -15589,17 +15644,25 @@ int LuaScriptInterface::luaWeaponElement(lua_State* L)
 			std::string tmpStrValue = asLowerCaseString(element);
 			if (tmpStrValue == "earth") {
 				weapon->params.combatType = COMBAT_EARTHDAMAGE;
-			} else if (tmpStrValue == "ice") {
+			}
+			#ifndef __PROTOCOL_792__
+			else if (tmpStrValue == "ice") {
 				weapon->params.combatType = COMBAT_ICEDAMAGE;
-			} else if (tmpStrValue == "energy") {
+			}
+			#endif
+			else if (tmpStrValue == "energy") {
 				weapon->params.combatType = COMBAT_ENERGYDAMAGE;
 			} else if (tmpStrValue == "fire") {
 				weapon->params.combatType = COMBAT_FIREDAMAGE;
-			} else if (tmpStrValue == "death") {
+			}
+			#ifndef __PROTOCOL_792__
+			else if (tmpStrValue == "death") {
 				weapon->params.combatType = COMBAT_DEATHDAMAGE;
 			} else if (tmpStrValue == "holy") {
 				weapon->params.combatType = COMBAT_HOLYDAMAGE;
-			} else {
+			}
+			#endif
+			else {
 				std::cout << "[Warning - weapon:element] Type \"" << element << "\" does not exist." << std::endl;
 			}
 		} else {
@@ -15910,17 +15973,25 @@ int LuaScriptInterface::luaWeaponExtraElement(lua_State* L)
 			std::string tmpStrValue = asLowerCaseString(element);
 			if (tmpStrValue == "earth") {
 				it.abilities.get()->elementType = COMBAT_EARTHDAMAGE;
-			} else if (tmpStrValue == "ice") {
+			}
+			#ifndef __PROTOCOL_792__
+			else if (tmpStrValue == "ice") {
 				it.abilities.get()->elementType = COMBAT_ICEDAMAGE;
-			} else if (tmpStrValue == "energy") {
+			}
+			#endif
+			else if (tmpStrValue == "energy") {
 				it.abilities.get()->elementType = COMBAT_ENERGYDAMAGE;
 			} else if (tmpStrValue == "fire") {
 				it.abilities.get()->elementType = COMBAT_FIREDAMAGE;
-			} else if (tmpStrValue == "death") {
+			}
+			#ifndef __PROTOCOL_792__
+			else if (tmpStrValue == "death") {
 				it.abilities.get()->elementType = COMBAT_DEATHDAMAGE;
 			} else if (tmpStrValue == "holy") {
 				it.abilities.get()->elementType = COMBAT_HOLYDAMAGE;
-			} else {
+			}
+			#endif
+			else {
 				std::cout << "[Warning - weapon:extraElement] Type \"" << element << "\" does not exist." << std::endl;
 			}
 		} else {

@@ -29,7 +29,9 @@
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result);
 
 std::string transformToSHA1(const std::string& input);
+#ifndef __PROTOCOL_792__
 std::string generateToken(const std::string& key, uint32_t ticks);
+#endif
 
 void replaceString(std::string& str, const std::string& sought, const std::string& replacement);
 void trim_right(std::string& source, char t);
@@ -74,7 +76,9 @@ std::string getCombatName(CombatType_t combatType);
 std::string getSpecialSkillName(uint8_t skillid);
 std::string getSkillName(uint8_t skillid);
 
+#ifndef __PROTOCOL_792__
 uint32_t adlerChecksum(const uint8_t* data, size_t length);
+#endif
 
 std::string ucfirst(std::string str);
 std::string ucwords(std::string str);

@@ -59,7 +59,11 @@ class ProtocolGame final : public Protocol
 		// static protocol information
 		enum {server_sends_first = true};
 		enum {protocol_identifier = 0}; // Not required as we send first
+		#ifndef __PROTOCOL_792__
 		enum {use_checksum = true};
+		#else
+		enum {use_checksum = false};
+		#endif
 		static const char* protocol_name() {
 			return "gameworld protocol";
 		}
@@ -118,11 +122,13 @@ class ProtocolGame final : public Protocol
 		void parseUpdateContainer(NetworkMessage& msg);
 		void parseTextWindow(NetworkMessage& msg);
 		void parseHouseWindow(NetworkMessage& msg);
+		#ifndef __PROTOCOL_792__
 		void parseWrapItem(NetworkMessage& msg);
 
 		void parseLookInShop(NetworkMessage& msg);
 		void parsePlayerPurchase(NetworkMessage& msg);
 		void parsePlayerSale(NetworkMessage& msg);
+		#endif
 
 		void parseQuestLine(NetworkMessage& msg);
 
@@ -130,6 +136,7 @@ class ProtocolGame final : public Protocol
 		void parseJoinParty(NetworkMessage& msg);
 		void parseRevokePartyInvite(NetworkMessage& msg);
 		void parsePassPartyLeadership(NetworkMessage& msg);
+		#ifndef __PROTOCOL_792__
 		void parseEnableSharedPartyExperience(NetworkMessage& msg);
 
 		void parseToggleMount(NetworkMessage& msg);
@@ -138,17 +145,20 @@ class ProtocolGame final : public Protocol
 
 		void parseBrowseField(NetworkMessage& msg);
 		void parseSeekInContainer(NetworkMessage& msg);
+		#endif
 
 		//trade methods
 		void parseRequestTrade(NetworkMessage& msg);
 		void parseLookInTrade(NetworkMessage& msg);
 
+		#ifndef __PROTOCOL_792__
 		//market methods
 		void parseMarketLeave();
 		void parseMarketBrowse(NetworkMessage& msg);
 		void parseMarketCreateOffer(NetworkMessage& msg);
 		void parseMarketCancelOffer(NetworkMessage& msg);
 		void parseMarketAcceptOffer(NetworkMessage& msg);
+		#endif
 
 		//VIP methods
 		void parseAddVip(NetworkMessage& msg);
@@ -182,7 +192,9 @@ class ProtocolGame final : public Protocol
 		void sendCreatureHealth(const Creature* creature);
 		void sendSkills();
 		void sendPing();
+		#ifndef __PROTOCOL_792__
 		void sendPingBack();
+		#endif
 		void sendCreatureTurn(const Creature* creature, uint32_t stackPos);
 		void sendCreatureSay(const Creature* creature, SpeakClasses type, const std::string& text, const Position* pos = nullptr);
 
@@ -196,17 +208,22 @@ class ProtocolGame final : public Protocol
 		void sendStats();
 		void sendBasicData();
 		void sendTextMessage(const TextMessage& message);
+		
+		#ifndef __PROTOCOL_792__
 		void sendReLoginWindow(uint8_t unfairFightReduction);
-
 		void sendTutorial(uint8_t tutorialId);
 		void sendAddMarker(const Position& pos, uint8_t markType, const std::string& desc);
 
 		void sendCreatureWalkthrough(const Creature* creature, bool walkthrough);
+		#endif
 		void sendCreatureShield(const Creature* creature);
 		void sendCreatureSkull(const Creature* creature);
+		#ifndef __PROTOCOL_792__
 		void sendCreatureType(uint32_t creatureId, uint8_t creatureType);
 		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
+		#endif
 
+		#ifndef __PROTOCOL_792__
 		void sendShop(Npc* npc, const ShopInfoList& itemList);
 		void sendCloseShop();
 		void sendSaleItemList(const std::list<ShopInfo>& shop);
@@ -218,6 +235,7 @@ class ProtocolGame final : public Protocol
 		void sendMarketCancelOffer(const MarketOfferEx& offer);
 		void sendMarketBrowseOwnHistory(const HistoryMarketOfferList& buyOffers, const HistoryMarketOfferList& sellOffers);
 		void sendMarketDetail(uint16_t itemId);
+		#endif
 		void sendTradeItemRequest(const std::string& traderName, const Item* item, bool ack);
 		void sendCloseTrade();
 
@@ -230,8 +248,10 @@ class ProtocolGame final : public Protocol
 		void sendVIP(uint32_t guid, const std::string& name, const std::string& description, uint32_t icon, bool notify, VipStatus_t status);
 		void sendVIPEntries();
 
+		#ifndef __PROTOCOL_792__
 		void sendPendingStateEntered();
 		void sendEnterWorld();
+		#endif
 
 		void sendFightModes();
 

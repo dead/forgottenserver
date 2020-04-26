@@ -993,7 +993,11 @@ void Monster::onThinkYell(uint32_t interval)
 	if (yellTicks >= mType->info.yellSpeedTicks) {
 		yellTicks = 0;
 
+		#ifndef __PROTOCOL_792__
 		if (!mType->info.voiceVector.empty() && (mType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+		#else
+		if (!mType->info.voiceVector.empty() && (mType->info.yellChance == static_cast<uint32_t>(uniform_random(1, 100)))) {
+		#endif
 			uint32_t index = uniform_random(0, mType->info.voiceVector.size() - 1);
 			const voiceBlock_t& vb = mType->info.voiceVector[index];
 
